@@ -24,7 +24,7 @@ workflows:
             - pack
       - orb-tools/test-in-builds:
           name: test
-          orb-location: src/@orb.yml
+          orb-location: orb.yml
           orb-name: gcp-auth
           test-steps:
             - orb-tools/local-test-build:
