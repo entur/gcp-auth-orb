@@ -1,17 +1,20 @@
-# Entur - CircleCI Helm Orb
-This orb tries to simply huge CircleCI configuration files by adding common Helm functionality.
+# Entur - CircleCI GCP Authentication Orb
 
-https://circleci.com/orbs/registry/orb/entur/helm
+> This is a work in progress, not yet available as a pulic release.
+
+This orb is a utility orb for other orbs to easily authenticate with GCP
+
+https://circleci.com/orbs/registry/orb/entur/gcp-auth
 
 ## Requirements
-An executor that has `curl` and `gcloud` pre-installed.
+An executor that has `gcloud` pre-installed. One is available as gcp-auth/entur-cci-toolbox
 
 ## Usage
 
 Import the orb and give it a name. Add this to the `orbs`-key in your CircleCI-configuration:
 ```yaml
 orbs:
- helm: entur/helm@volatile 
+ gcp-auth: entur/gcp-auth@volatile 
  # volatile selects the newest version. More examples of versioning here: https://circleci.com/docs/2.0/creating-orbs/#semantic-versioning-in-orbs
 ```
 
@@ -21,10 +24,9 @@ Use the orb like this:
 jobs:
   your-job-name:
     steps:
-     - helm/install-helm-chart:
-         chart: Chart.yaml
-         namespace: development
-         release-name: my-release
+     - gcp-auth/authenticate-gcp:
+          name: use-gcloud-cli-for-something
+          context: context-with-appropriate-gcp-credentials # You can add the gcp-service-key & gcp-container-cluster in the context.
      # do more CircleCI stuff.
 ``` 
          
@@ -49,6 +51,6 @@ circleci orb validate orb.yml
 
 After commit & push to the repository, the orb will be automatically published as part of the workflow in CircleCI. 
 
-A dev-orb will be published as: `entur/helm@dev:YOUR-BRANCH-NAME`. Release orbs are created on push to the master branch. 
+A dev-orb will be published as: `entur/gcp-auth@dev:YOUR-BRANCH-NAME`. Release orbs are created on push to the master branch. 
 
 You can read more here: https://circleci.com/docs/2.0/creating-orbs/
