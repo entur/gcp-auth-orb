@@ -27,12 +27,11 @@ jobs:
           command: gcloud container get-server-config
 
 workflows:
-  version: 2.1
   main:
     jobs:
       - test-authenticate-gcp:
           name: GCP Auth
           context: org-devstage-dev
-      - test-authenticate-gcp-container-cluster:
+      - test-authenticate-gcp-kubernetes:
           name: GKE Auth
           context: org-devstage-dev
