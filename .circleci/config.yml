@@ -28,9 +28,8 @@ workflows:
           orb-name: gcp-auth
           test-steps:
             - orb-tools/pack:
-                name: pack for test
-                source-dir: src
-                artifact-path: orb.yml
+                source: src
+                destination: orb.yml
             - orb-tools/local-test-build:
                 test-config-location: test/install-test.yml
           requires:
