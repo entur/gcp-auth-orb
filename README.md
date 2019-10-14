@@ -7,7 +7,7 @@ This orb is a utility orb for other orbs to easily authenticate with GCP
 https://circleci.com/orbs/registry/orb/entur/gcp-auth
 
 ## Requirements
-An executor that has `gcloud` pre-installed. One is available as gcp-auth/entur-cci-toolbox
+An executor that has `gcloud` pre-installed. One is available as `gcp-auth/entur-cci-toolbox`
 
 ## Usage
 
