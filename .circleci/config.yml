@@ -12,7 +12,6 @@ workflows:
           name: pack
           source-dir: src
           artifact-path: orb.yml
-          attach-workspace: true
       - orb-tools/publish:
           name: publish
           context: orb-publishing
@@ -20,7 +19,6 @@ workflows:
             branches:
               ignore: master
           checkout: false
-          attach-workspace: true
           orb-ref: entur/gcp-auth@dev:$CIRCLE_BRANCH
           requires:
             - pack
@@ -28,8 +26,11 @@ workflows:
           name: test
           orb-location: orb.yml
           orb-name: gcp-auth
-          attach-workspace: true
           test-steps:
+            - orb-tools/pack:
+                name: pack for test
+                source-dir: src
+                artifact-path: orb.yml
             - orb-tools/local-test-build:
                 test-config-location: test/install-test.yml
           requires:
