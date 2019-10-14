@@ -1,0 +1,36 @@
+version: 2.1
+
+orbs:
+  orb-tools: circleci/orb-tools@8.9.0
+
+workflows:
+  verify:
+    jobs:
+      - orb-tools/lint:
+          name: lint
+      - orb-tools/pack:
+          name: pack
+          source-dir: src
+      - orb-tools/publish:
+          name: publish
+          context: orb-publishing
+          filters:
+            branches:
+              ignore: master
+          checkout: false
+          attach-workspace: true
+          orb-ref: entur/gcp-auth@dev:$CIRCLE_BRANCH
+          requires:
+            - pack
+      - orb-tools/increment:
+          name: release
+          context: orb-publishing
+          filters:
+            branches:
+              only: master
+          checkout: false
+          attach-workspace: true
+          orb-ref: entur/gcp-auth
+          requires:
+            - lint
+            - pack
