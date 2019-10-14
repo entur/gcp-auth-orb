@@ -5,19 +5,19 @@ usage:
   version: 2.1
 
 orbs:
-  gcp-auth: entur/gcp-auth@volatile # Use volatile if you always want the newest version.
+  # Use volatile if you always want the newest version.
+  gcp-auth: entur/gcp-auth@volatile
 
 jobs:
   deploy-application:
     docker:
-      - image: entur/cci-toolbox:2.0 # This executor comes with a lof of pre-installed features; including gcloud.
+      # Comes with a lof of pre-installed features; including gcloud.
+      - image: entur/cci-toolbox:2.0
 
     steps:
       - gcp-auth/authenticate-gcp:
-          gcp-service-key: "{'json':'here'}" # If not provided, the command will look for the environment variable GCLOUD_SERVICE_KEY
-
-    # Note: It is recommended not to have the gcp-service-key and gcp-container-cluster in plain text here.
-    # Add the required keys as environment variables either in the CircleCI context (and include it via the workflow) or directly to the project.
+          # If not provided, env variable GCLOUD_SERVICE_KEY is used
+          gcp-service-key: "{'json':'here'}" # do not use plain text here!
 
 workflows:
   version: 2.1
@@ -26,4 +26,5 @@ workflows:
     jobs:
       - deploy-application:
           name: use-gcloud-cli-for-something
-          context: a-context-that-contain-gcp-env-varialbes # You can add the gcp-service-key & gcp-container-cluster in the context.
+          # Choose a context with the appropriate env variables set
+          context: org-devstage-dev

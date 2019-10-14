@@ -8,4 +8,5 @@ description: |
 executors:
   entur-cci-toolbox:
     docker:
-      - image: entur/cci-toolbox:2.1 # Entur CCI-toolbox has gcloud & rsync pre-installed.
+      # Entur CCI-toolbox has gcloud & rsync pre-installed.
+      - image: entur/cci-toolbox:2.1
