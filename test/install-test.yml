@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  gcp-auth: entur/gcp-auth@dev:refactor-gcp-auth # Use volatile if you always want the newest version.
+
 executors:
   entur-cci-toolbox: gcp-auth/entur-cci-toolbox
 
