@@ -11,6 +11,7 @@ workflows:
       - orb-tools/pack:
           name: pack
           source-dir: src
+          attach-workspace: true
       - orb-tools/publish:
           name: publish
           context: orb-publishing
