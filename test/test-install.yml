@@ -1,16 +1,35 @@
 version: 2.1
 
+executors:
+  entur-cci-toolbox: gcp-auth/entur-cci-toolbox
+
 jobs:
-  test:
-    machine: true
-    environment:
-      TERM: dumb
+  test-authenticate-gcp:
+    executor: entur-cci-toolbox
     steps:
+      - checkout
       - gcp-auth/authenticate-gcp
-      - run: gcloud config get-value account
+        # using default from context
+      - run:
+          name: Check that get-value account returns OK
+          command: gcloud config get-value account
+  test-authenticate-gcp-kubernetes:
+    executor: entur-cci-toolbox
+    steps:
+      - checkout
+      - gcp-auth/authenticate-gcp-kubernetes
+        # using default from context
+      - run:
+          name: Check that get-server-config returns OK
+          command: gcloud container get-server-config
 
 workflows:
+  version: 2.1
   main:
     jobs:
-      - test:
-          name: build
+      - test-authenticate-gcp:
+          name: GCP Auth
+          context: org-devstage-dev
+      - test-authenticate-gcp-container-cluster:
+          name: GKE Auth
+          context: org-devstage-dev

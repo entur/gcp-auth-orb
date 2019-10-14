@@ -1,5 +1,5 @@
 description: |
-  Demonstrate authenticating to gcp container cluster with this orb.
+  Demonstrate authenticating to kubernetes on GCP with this orb.
 
 usage:
   version: 2.1
@@ -13,7 +13,7 @@ jobs:
       - image: entur/cci-toolbox:2.0 # This executor comes with a lof of pre-installed features; including gcloud.
 
     steps:
-      - gcp-auth/authenticate-gcp-container-cluster:
+      - gcp-auth/authenticate-gcp-kubernetes:
           gcp-service-key: "{'json':'here'}" # If not provided, the command will look for the environment variable GCLOUD_SERVICE_KEY
           gcp-container-cluster: "mycluster" # If not provided, the command will look for the environment variable CLOUDSDK_CONTAINER_CLUSTER
 
@@ -27,4 +27,5 @@ workflows:
     jobs:
       - deploy-application:
           name: deploy-to-kubernetes
+          # context would probably be org-devstage-dev
           context: a-context-that-contain-gcp-env-varialbes # You can add the gcp-service-key & gcp-container-cluster in the context.
