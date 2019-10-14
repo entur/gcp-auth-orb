@@ -39,7 +39,7 @@ steps:
           echo "Using cluster from environment."
           CLUSTER="${CLOUDSDK_CONTAINER_CLUSTER}"
         else
-          echo "No cluster were found. Looked in parameters and environment."
+          echo "No cluster were found. Looked in parameter gcp-container-cluster and environment CLOUDSDK_CONTAINER_CLUSTER."
         fi
 
         gcloud --quiet container clusters get-credentials ${CLUSTER}

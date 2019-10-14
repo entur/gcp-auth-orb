@@ -22,6 +22,16 @@ workflows:
           orb-ref: entur/gcp-auth@dev:$CIRCLE_BRANCH
           requires:
             - pack
+      - orb-tools/test-in-builds:
+          name: test
+          orb-location: src/@orb.yml
+          orb-name: gcp-auth
+          test-steps:
+            - orb-tools/local-test-build:
+                test-config-location: test/install-test.yml
+          requires:
+            - publish
+            - lint
       - orb-tools/increment:
           name: release
           context: orb-publishing

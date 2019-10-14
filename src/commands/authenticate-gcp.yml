@@ -35,7 +35,7 @@ steps:
           echo "Using credentials from environment."
           CREDENTIALS="${GCLOUD_SERVICE_KEY}"
         else
-          echo "No credentials were found. Looked in parameters and environment."
+          echo "No credentials were found. Looked in parameter gcp-service-key and environment GCLOUD_SERVICE_KEY."
           exit 1
         fi
 
