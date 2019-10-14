@@ -1,0 +1,43 @@
+description: |
+  Authenticate to Google Cloud Platform with a service account.
+  This command requires a Google Cloud Service Key.
+
+parameters:
+  gcp-service-key:
+    description: |
+      The credentials for the Service Account to be used when communicating to Google Cloud.
+      If not provided, the command will look for the environment variable $GCLOUD_SERVICE_KEY
+
+      To obtain the key for this command,
+      use either the Google Cloud Platform Console or gcloud iam service-accounts keys create.
+      The key can be .json (preferred) or .p12 (legacy) format.
+    type: string
+    default: ""
+
+steps:
+  - run:
+      name: Authenticate Service Account to Google Cloud Platform
+      command: |
+        if ! which gcloud > /dev/null; then
+          echo "gcloud is not installed. Please run this command with a executor that supports gcloud."
+          exit 1
+        fi
+
+        if [[ -n $(gcloud auth list --format="value(account)") ]]; then
+            echo "Client is already authenticated to Google Cloud Platform. Skipping authentication."
+            exit 0
+        fi
+
+        CREDENTIALS="<< parameters.gcp-service-key >>"
+        if [[ -n "${CREDENTIALS}" ]]; then
+          echo "Using credentials provided in parameters."
+        elif [[ -n "${GCLOUD_SERVICE_KEY}" ]]; then
+          echo "Using credentials from environment."
+          CREDENTIALS="${GCLOUD_SERVICE_KEY}"
+        else
+          echo "No credentials were found. Looked in parameters and environment."
+          exit 1
+        fi
+
+        echo ${CREDENTIALS} > ${HOME}/account-auth.json
+        gcloud auth activate-service-account --key-file ${HOME}/account-auth.json

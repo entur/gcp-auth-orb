@@ -1,0 +1,45 @@
+description: |
+  Authenticate to Google Cloud Platform Container Cluster.
+  This command requires two parameters:
+  1. Google Cloud Service Key
+  2. Google Cloud Container Cluster
+
+parameters:
+  gcp-service-key:
+    description: |
+      The credentials for the Service Account to be used when communicating to Google Cloud.
+      If not provided, the command will look for the environment variable $GCLOUD_SERVICE_KEY
+
+      To obtain the key for this command,
+      use either the Google Cloud Platform Console or gcloud iam service-accounts keys create.
+      The key can be .json (preferred) or .p12 (legacy) format.
+    type: string
+    default: ""
+  gcp-container-cluster:
+    description: |
+      The name of the Google Cloud container cluster to use.
+      If not provided, the command will look for the environment variable $CLOUDSDK_CONTAINER_CLUSTER.
+
+      To obtain the name of your clusters,
+      use the Google Cloud Platform Console (Command: gcloud container clusters list)
+    type: string
+    default: ""
+
+steps:
+  - authenticate-gcp:
+      gcp-service-key: << parameters.gcp-service-key >>
+  - run:
+      name: Get credentials from cluster.
+      command: |
+
+        CLUSTER="<< parameters.gcp-container-cluster >>"
+        if [[ -n "${CLUSTER}" ]]; then
+          echo "Using cluster provided in parameters."
+        elif [[ -n "${CLOUDSDK_CONTAINER_CLUSTER}" ]]; then
+          echo "Using cluster from environment."
+          CLUSTER="${CLOUDSDK_CONTAINER_CLUSTER}"
+        else
+          echo "No cluster were found. Looked in parameters and environment."
+        fi
+
+        gcloud --quiet container clusters get-credentials ${CLUSTER}

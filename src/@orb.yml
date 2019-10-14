@@ -1,0 +1,11 @@
+version: 2.1
+
+description: |
+  An orb for authenticating GCP
+  Made for Entur AS.
+  Project homepage: https://github.com/entur/gcp-auth-orb
+
+executors:
+  entur-cci-toolbox:
+    docker:
+      - image: entur/cci-toolbox:2.1 # Entur CCI-toolbox has gcloud & rsync pre-installed.
