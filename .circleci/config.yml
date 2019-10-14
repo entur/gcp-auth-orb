@@ -28,6 +28,7 @@ workflows:
           name: test
           orb-location: orb.yml
           orb-name: gcp-auth
+          attach-workspace: true
           test-steps:
             - orb-tools/local-test-build:
                 test-config-location: test/install-test.yml
