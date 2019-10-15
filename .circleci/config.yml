@@ -58,7 +58,7 @@ workflows:
                   tail -n 1 | grep "Success"
                 name: run test job locally
           requires:
-            - publish
+            # - publish
             - lint
       - orb-tools/increment:
           name: release
