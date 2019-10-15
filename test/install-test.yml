@@ -1,0 +1,31 @@
+version: 2.1
+
+#Include this in your config.yml
+#orbs:
+#  gcp-auth: entur/gcp-auth@dev:refactor-gcp-auth # Use volatile if you always want the newest version.
+
+executors:
+  entur-cci-toolbox: gcp-auth/entur-cci-toolbox
+
+jobs:
+  test-gcp-auth-orb:
+    executor: entur-cci-toolbox
+    steps:
+      - checkout
+      - gcp-auth/authenticate-gcp
+        # using default from context
+      - run:
+          name: Check that get-value account returns OK
+          command: gcloud config get-value account
+      - gcp-auth/authenticate-gcp-kubernetes
+        # using default from context
+      - run:
+          name: Check that get-server-config returns OK
+          command: gcloud container get-server-config
+
+workflows:
+  version: 2.1
+  main:
+    jobs:
+      - test-gcp-auth-orb:
+          name: build #must be called build for the test to be run

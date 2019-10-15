@@ -1,0 +1,36 @@
+description: |
+  Demonstrate authenticating to kubernetes on GCP with this orb.
+
+usage:
+  version: 2.1
+
+orbs:
+  # Use volatile if you always want the newest version.
+  gcp-auth: entur/gcp-auth@volatile
+
+jobs:
+  deploy-application:
+    docker:
+      # Comes with a lof of pre-installed features; including gcloud.
+      - image: entur/cci-toolbox:2.0
+
+    steps:
+      - gcp-auth/authenticate-gcp-kubernetes:
+          # If not provided, env variable GCLOUD_SERVICE_KEY is used
+          gcp-service-key: "{'json':'here'}"
+          # If not provided, env variable CLOUDSDK_CONTAINER_CLUSTER is used
+          gcp-container-cluster: "mycluster"
+
+    # Note: Do not enter these in plain text.
+    # Add the required keys as env variables either in the CircleCI context
+    # (and include it via the workflow) or directly to the project.
+
+workflows:
+  version: 2.1
+
+  my-workflow:
+    jobs:
+      - deploy-application:
+          name: deploy-to-kubernetes
+          # context would probably be org-devstage-dev
+          context: a-context-that-contain-gcp-env-varialbes
