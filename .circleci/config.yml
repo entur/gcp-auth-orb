@@ -28,12 +28,14 @@ workflows:
           orb-location: /home/circleci/project/orb.yml
           orb-name: gcp-auth
           attach-workspace: true
+          workspace-root: .
           test-steps: # these happen after the initial test-in-builds
             #- orb-tools/pack:
             #    source: src
             #    destination: orb.yml
             - orb-tools/local-test-build:
                 test-config-location: test/install-test.yml
+            - run: ls -la
           requires:
             - publish
             - lint
