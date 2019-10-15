@@ -1,5 +1,6 @@
 version: 2.1
 
+#should not be needed
 orbs:
   gcp-auth: entur/gcp-auth@dev:refactor-gcp-auth # Use volatile if you always want the newest version.
 
@@ -27,4 +28,4 @@ workflows:
   main:
     jobs:
       - test-gcp-auth-orb:
-          name: build
+          name: build #must be called build for the test to be run

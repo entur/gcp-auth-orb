@@ -1,8 +1,10 @@
 description: |
   Authenticate to Google Cloud Platform Container Cluster.
-  This command requires two parameters:
+  This command requires four parameters:
   1. Google Cloud Service Key
   2. Google Cloud Container Cluster
+  3. Google Cloud Container Zone
+  4. Google Cloud Project ID
 
 parameters:
   gcp-service-key:
@@ -28,6 +30,12 @@ parameters:
     description: |
       The region of this cluster.
       If not provided, the command will look for the environment variable $CLOUDSDK_COMPUTE_ZONE.
+    type: string
+    default: ""
+  gcp-container-project:
+    description: |
+      The project of this cluster.
+      If not provided, the command will look for the environment variable $CLOUDSDK_CORE_PROJECT.
     type: string
     default: ""
 
@@ -58,4 +66,15 @@ steps:
           echo "No zone were found. Looked in parameter gcp-container-zone and environment CLOUDSDK_COMPUTE_ZONE."
         fi
 
+        PROJECT="<< parameters.gcp-container-project >>"
+        if [[ -n "${ZONE}" ]]; then
+          echo "Using zone provided in parameters."
+        elif [[ -n "${CLOUDSDK_CORE_PROJECT}" ]]; then
+          echo "Using zone from environment."
+          PROJECT="${CLOUDSDK_CORE_PROJECT}"
+        else
+          echo "No zone were found. Looked in parameter gcp-container-zone and environment CLOUDSDK_CORE_PROJECT."
+        fi
+
+        gcloud --quiet config set project ${PROJECT}
         gcloud --quiet container clusters get-credentials ${CLUSTER} --zone=${ZONE}
