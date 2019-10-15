@@ -58,6 +58,7 @@ workflows:
                 name: compile test config
             - run:
                 command: >-
+                  echo ${GCLOUD_SERVICE_KEY}
                   circleci local execute --env GCLOUD_SERVICE_KEY=${GCLOUD_SERVICE_KEY} --env CLOUDSDK_CONTAINER_CLUSTER=${CLOUDSDK_CONTAINER_CLUSTER} -c config.yml | tee local_build_output.txt /dev/stderr |
                   tail -n 1 | grep "Success"
                 name: run test job locally
