@@ -12,6 +12,7 @@ workflows:
           name: pack
           source-dir: src
           attach-workspace: true
+          workspace-root: workspace
       - orb-tools/publish:
           name: publish
           context: orb-publishing
@@ -25,17 +26,15 @@ workflows:
             - pack
       - orb-tools/test-in-builds:
           name: test
-          orb-location: /home/circleci/project/orb.yml
+          orb-location: orb.yml
           orb-name: gcp-auth
           attach-workspace: true
-          workspace-root: .
           test-steps: # these happen after the initial test-in-builds
             #- orb-tools/pack:
             #    source: src
             #    destination: orb.yml
             - orb-tools/local-test-build:
                 test-config-location: test/install-test.yml
-            - run: ls -la
           requires:
             - publish
             - lint
