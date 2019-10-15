@@ -60,6 +60,7 @@ workflows:
           requires:
             # - publish
             - lint
+            - pack
       - orb-tools/increment:
           name: release
           context: orb-publishing
