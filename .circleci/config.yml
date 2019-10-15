@@ -48,7 +48,7 @@ workflows:
                   #echo ${GCLOUD_SERVICE_KEY}
             # from https://circleci.com/orbs/registry/orb/circleci/orb-tools#commands-local-test-build
             - run: mkdir -p tmp-config-src
-            - run: cp test/install-test.yml >> tmp-config-src/config.yml
+            - run: cp test/install-test.yml tmp-config-src/config.yml
             - orb-tools/pack:
                 destination: uncompiled-config.yml
                 source: tmp-config-src
