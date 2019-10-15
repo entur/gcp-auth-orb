@@ -58,4 +58,4 @@ steps:
           echo "No zone were found. Looked in parameter gcp-container-zone and environment CLOUDSDK_COMPUTE_ZONE."
         fi
 
-        gcloud --quiet container clusters get-credentials ${CLUSTER} --zone=ZONE
+        gcloud --quiet container clusters get-credentials ${CLUSTER} --zone=${ZONE}
