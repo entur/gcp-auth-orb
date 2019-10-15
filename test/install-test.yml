@@ -31,7 +31,7 @@ workflows:
   main:
     jobs:
       - test-authenticate-gcp:
-          name: GCP Auth
+          name: build
           context: org-devstage-dev
       - test-authenticate-gcp-kubernetes:
           name: GKE Auth
