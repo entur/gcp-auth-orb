@@ -25,7 +25,7 @@ workflows:
             - pack
       - orb-tools/test-in-builds:
           name: test
-          orb-location: orb.yml
+          orb-location: /home/circleci/project/orb.yml
           orb-name: gcp-auth
           attach-workspace: true
           test-steps: # these happen after the initial test-in-builds
