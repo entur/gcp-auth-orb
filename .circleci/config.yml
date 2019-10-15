@@ -34,9 +34,6 @@ workflows:
           checkout: true
           workspace-root: .
           test-steps: # these happen after the initial test-in-builds
-            #- orb-tools/pack:
-            #    source: src
-            #    destination: orb.yml
             - run:
                 name: Update PATH and Define Environment Variable at Runtime
                 command: |

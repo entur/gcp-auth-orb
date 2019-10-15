@@ -11,26 +11,42 @@ An executor that has `gcloud` pre-installed. One is available as `gcp-auth/entur
 
 ## Usage
 
-Import the orb and give it a name. Add this to the `orbs`-key in your CircleCI-configuration:
-```yaml
-orbs:
- gcp-auth: entur/gcp-auth@volatile 
- # volatile selects the newest version. More examples of versioning here: https://circleci.com/docs/2.0/creating-orbs/#semantic-versioning-in-orbs
-```
-
 Use the orb like this:
 
 ```yaml
+version: 2.1
+
+orbs: # This makes the gcp-auth orb available in your config
+  gcp-auth: entur/gcp-auth@volatile # Use volatile if you always want the newest version.
+
+executors:
+  entur-cci-toolbox: gcp-auth/entur-cci-toolbox
+
 jobs:
-  your-job-name:
+  do-something-with-gcloud:
+    executor: entur-cci-toolbox
     steps:
-     - gcp-auth/authenticate-gcp:
-          name: use-gcloud-cli-for-something
-          context: context-with-appropriate-gcp-credentials # You can add the gcp-service-key & gcp-container-cluster in the context.
-     # do more CircleCI stuff.
+      - checkout
+      - gcp-auth/authenticate-gcp
+      # now, do something useful
+  do-something-with-kubernetes:
+    executor: entur-cci-toolbox
+    steps:
+      - checkout
+      - gcp-auth/authenticate-gcp-kubernetes
+      # now, do something useful
+
+workflows:
+  version: 2.1
+  main:
+    jobs:
+      - do-something-with-gcloud:
+          context: org-devstage-dev #or maybe dev if on gh/entur
+      - do-something-with-kubernetes:
+          context: org-devstage-dev #or maybe dev if on gh/entur
 ``` 
          
-Available commands can be found in `src/commands`. Usage examples in `examples`             
+Available commands can be found in `src/commands`. Usage examples in `examples` and in `text/install-test.yml`       
 
 ## Pack and publish orb
 
