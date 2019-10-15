@@ -45,8 +45,6 @@ workflows:
                   echo 'export CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE}' >> $BASH_ENV
                   source $BASH_ENV
                   echo ${BASH_ENV}
-                  #echo ${CLOUDSDK_CONTAINER_CLUSTER}
-                  #echo ${GCLOUD_SERVICE_KEY}
             # from https://circleci.com/orbs/registry/orb/circleci/orb-tools#commands-local-test-build
             - run: mkdir -p tmp-config-src
             - run: cp test/install-test.yml tmp-config-src/config.yml
