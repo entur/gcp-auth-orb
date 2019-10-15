@@ -42,6 +42,7 @@ workflows:
                 command: |
                   echo 'export CLOUDSDK_CONTAINER_CLUSTER=${CLOUDSDK_CONTAINER_CLUSTER}' >> $BASH_ENV
                   echo 'export GCLOUD_SERVICE_KEY=${GCLOUD_SERVICE_KEY}' >> $BASH_ENV
+                  echo 'export CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE}' >> $BASH_ENV
                   source $BASH_ENV
                   echo ${BASH_ENV}
                   #echo ${CLOUDSDK_CONTAINER_CLUSTER}
@@ -58,7 +59,7 @@ workflows:
                 name: compile test config
             - run:
                 command: >-
-                  circleci local execute --env GCLOUD_SERVICE_KEY="${GCLOUD_SERVICE_KEY}" --env CLOUDSDK_CONTAINER_CLUSTER="${CLOUDSDK_CONTAINER_CLUSTER}" -c config.yml | tee local_build_output.txt /dev/stderr |
+                  circleci local execute --env GCLOUD_SERVICE_KEY="${GCLOUD_SERVICE_KEY}" --env CLOUDSDK_CONTAINER_CLUSTER="${CLOUDSDK_CONTAINER_CLUSTER}" --env CLOUDSDK_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"-c config.yml | tee local_build_output.txt /dev/stderr |
                   tail -n 1 | grep "Success"
                 name: run test job locally
           requires:

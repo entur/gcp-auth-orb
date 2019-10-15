@@ -24,6 +24,12 @@ parameters:
       use the Google Cloud Platform Console (Command: gcloud container clusters list)
     type: string
     default: ""
+  gcp-container-zone:
+    description: |
+      The region of this cluster.
+      If not provided, the command will look for the environment variable $CLOUDSDK_COMPUTE_ZONE.
+    type: string
+    default: ""
 
 steps:
   - authenticate-gcp:
@@ -42,4 +48,14 @@ steps:
           echo "No cluster were found. Looked in parameter gcp-container-cluster and environment CLOUDSDK_CONTAINER_CLUSTER."
         fi
 
-        gcloud --quiet container clusters get-credentials ${CLUSTER}
+        ZONE="<< parameters.gcp-container-zone >>"
+        if [[ -n "${ZONE}" ]]; then
+          echo "Using zone provided in parameters."
+        elif [[ -n "${CLOUDSDK_COMPUTE_ZONE}" ]]; then
+          echo "Using zone from environment."
+          ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+        else
+          echo "No zone were found. Looked in parameter gcp-container-zone and environment CLOUDSDK_COMPUTE_ZONE."
+        fi
+
+        gcloud --quiet container clusters get-credentials ${CLUSTER} --zone=ZONE
