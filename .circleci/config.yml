@@ -37,6 +37,14 @@ workflows:
             #- orb-tools/pack:
             #    source: src
             #    destination: orb.yml
+            - run:
+                name: Update PATH and Define Environment Variable at Runtime
+                command: |
+                  echo 'export CLOUDSDK_CONTAINER_CLUSTER=${CLOUDSDK_CONTAINER_CLUSTER}' >> $BASH_ENV
+                  echo 'export GCLOUD_SERVICE_KEY=${GCLOUD_SERVICE_KEY}' >> $BASH_ENV
+                  source $BASH_ENV
+                  echo ${CLOUDSDK_CONTAINER_CLUSTER}
+                  echo ${GCLOUD_SERVICE_KEY}
             - orb-tools/local-test-build:
                 test-config-location: test/install-test.yml
           requires:
