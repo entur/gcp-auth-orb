@@ -1,0 +1,238 @@
+# Orb 'circleci/orb-tools@8.27.4' resolved to 'circleci/orb-tools@8.27.4'
+version: 2
+jobs:
+  lint:
+    docker:
+    - image: singapore/lint-condo
+    resource_class: small
+    steps:
+    - run:
+        command: |
+          apk --update add git openssh
+        name: Install Git and Openssh
+    - checkout
+    - run:
+        command: |
+          touch .yamllint || true
+          cat << EOF > .yamllint
+          extends: relaxed
+
+          rules:
+            line-length:
+              max: 200
+              allow-non-breakable-inline-mappings: true
+
+          EOF
+        name: output default .yamllint file in the working directory
+    - run:
+        command: |
+          yamllint .
+        name: yamllint
+  pack:
+    docker:
+    - image: circleci/circleci-cli:latest
+    steps:
+    - checkout
+    - attach_workspace:
+        at: .
+    - run:
+        command: |
+          mkdir -pv $(dirname orb.yml)
+        name: Ensure destination path
+    - run:
+        command: |
+          circleci config pack src > orb.yml
+        name: Pack src to orb.yml
+    - run:
+        command: circleci orb validate orb.yml
+        name: Validate whether this is a well-formed orb.
+    - persist_to_workspace:
+        paths:
+        - orb.yml
+        root: .
+    - store_artifacts:
+        path: orb.yml
+  publish:
+    docker:
+    - image: circleci/circleci-cli:latest
+    steps:
+    - attach_workspace:
+        at: .
+    - run:
+        command: circleci orb validate orb.yml
+        name: Validate whether this is a well-formed orb.
+    - run:
+        command: "circleci orb publish orb.yml entur/gcp-auth@dev:$CIRCLE_BRANCH --token\
+          \ $CIRCLE_TOKEN \n"
+        name: |
+          Publish orb at orb.yml to entur/gcp-auth@dev:$CIRCLE_BRANCH NOTE: this currently assumes you are publishing to the registry at circleci.com
+  test:
+    machine: true
+    steps:
+    - checkout
+    - attach_workspace:
+        at: .
+    - run:
+        name: Install `circleci` CLI
+        command: |
+          [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
+          curl -fLSs https://circle.ci/cli | $SUDO bash
+          circleci --skip-update-check version
+    - run:
+        command: mkdir -pv tmp-config-src/orbs
+        name: create temp directory for packing test config
+    - run:
+        command: cp orb.yml tmp-config-src/orbs/gcp-auth.yml
+        name: copy orb over to be able to use as local orb in test config
+    - run:
+        name: Update PATH and Define Environment Variable at Runtime
+        command: |
+          echo 'export CLOUDSDK_CONTAINER_CLUSTER=${CLOUDSDK_CONTAINER_CLUSTER}' >> $BASH_ENV
+          echo 'export GCLOUD_SERVICE_KEY=${GCLOUD_SERVICE_KEY}' >> $BASH_ENV
+          source $BASH_ENV
+          echo ${BASH_ENV}
+          #echo ${CLOUDSDK_CONTAINER_CLUSTER}
+          #echo ${GCLOUD_SERVICE_KEY}
+    - run:
+        command: mkdir -p tmp-config-src
+    - run:
+        command: cp test/install-test.yml >> tmp-config-src/config.yml
+    - run:
+        command: |
+          mkdir -pv $(dirname uncompiled-config.yml)
+        name: Ensure destination path
+    - run:
+        command: |
+          circleci config pack tmp-config-src > uncompiled-config.yml
+        name: Pack tmp-config-src to uncompiled-config.yml
+    - run:
+        command: cat uncompiled-config.yml
+    - run:
+        command: circleci config process uncompiled-config.yml > config.yml
+        name: compile test config
+    - run:
+        command: circleci local execute -c config.yml | tee local_build_output.txt
+          /dev/stderr | tail -n 1 | grep "Success"
+        name: run test job locally
+  release:
+    docker:
+    - image: circleci/circleci-cli:latest
+    steps:
+    - attach_workspace:
+        at: workspace
+    - run:
+        command: circleci orb validate workspace/orb.yml
+        name: Validate whether this is a well-formed orb.
+    - run:
+        command: "circleci orb publish increment workspace/orb.yml entur/gcp-auth\
+          \ patch --token $CIRCLE_TOKEN \n"
+        name: |
+          Increment patch segment of orb at workspace/orb.yml NOTE: this currently assumes you are publishing to the registry at circleci.com
+workflows:
+  verify:
+    jobs:
+    - lint
+    - pack
+    - publish:
+        filters:
+          branches:
+            ignore: master
+        requires:
+        - pack
+        context: orb-publishing
+    - test:
+        requires:
+        - publish
+        - lint
+        context: dev
+    - release:
+        filters:
+          branches:
+            only: master
+        requires:
+        - lint
+        - pack
+        - test
+        context: orb-publishing
+  version: 2
+
+# Original config.yml file:
+# version: 2.1
+# 
+# orbs:
+#   orb-tools: circleci/orb-tools@8.27.4
+# 
+# workflows:
+#   verify:
+#     jobs:
+#       - orb-tools/lint:
+#           name: lint
+#       - orb-tools/pack:
+#           name: pack
+#           source-dir: src
+#           attach-workspace: true
+#       - orb-tools/publish:
+#           name: publish
+#           context: orb-publishing
+#           filters:
+#             branches:
+#               ignore: master
+#           checkout: false
+#           attach-workspace: true
+#           workspace-root: .
+#           orb-path: orb.yml
+#           orb-ref: entur/gcp-auth@dev:$CIRCLE_BRANCH
+#           requires:
+#             - pack
+#       - orb-tools/test-in-builds:
+#           name: test
+#           orb-location: orb.yml
+#           orb-name: gcp-auth
+#           attach-workspace: true
+#           context: dev
+#           checkout: true
+#           workspace-root: .
+#           test-steps: # these happen after the initial test-in-builds
+#             #- orb-tools/pack:
+#             #    source: src
+#             #    destination: orb.yml
+#             - run:
+#                 name: Update PATH and Define Environment Variable at Runtime
+#                 command: |
+#                   echo 'export CLOUDSDK_CONTAINER_CLUSTER=${CLOUDSDK_CONTAINER_CLUSTER}' >> $BASH_ENV
+#                   echo 'export GCLOUD_SERVICE_KEY=${GCLOUD_SERVICE_KEY}' >> $BASH_ENV
+#                   source $BASH_ENV
+#                   echo ${BASH_ENV}
+#                   #echo ${CLOUDSDK_CONTAINER_CLUSTER}
+#                   #echo ${GCLOUD_SERVICE_KEY}
+#             # from https://circleci.com/orbs/registry/orb/circleci/orb-tools#commands-local-test-build
+#             - run: mkdir -p tmp-config-src
+#             - run: cp test/install-test.yml >> tmp-config-src/config.yml
+#             - orb-tools/pack:
+#                 destination: uncompiled-config.yml
+#                 source: tmp-config-src
+#             - run: cat uncompiled-config.yml
+#             - run:
+#                 command: circleci config process uncompiled-config.yml > config.yml
+#                 name: compile test config
+#             - run:
+#                 command: >-
+#                   circleci local execute -c config.yml | tee local_build_output.txt /dev/stderr |
+#                   tail -n 1 | grep \"Success\"
+#                 name: run test job locally
+#           requires:
+#             - publish
+#             - lint
+#       - orb-tools/increment:
+#           name: release
+#           context: orb-publishing
+#           filters:
+#             branches:
+#               only: master
+#           checkout: false
+#           attach-workspace: true
+#           orb-ref: entur/gcp-auth
+#           requires:
+#             - lint
+#             - pack
+#             - test
