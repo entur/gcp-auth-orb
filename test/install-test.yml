@@ -1,8 +1,8 @@
 version: 2.1
 
 #Include this in your config.yml
-orbs:
-  gcp-auth: entur/gcp-auth@dev:refactor-gcp-auth # Use volatile if you always want the newest version.
+#orbs:
+#  gcp-auth: entur/gcp-auth@dev:refactor-gcp-auth # Use volatile if you always want the newest version.
 
 executors:
   entur-cci-toolbox: gcp-auth/entur-cci-toolbox
