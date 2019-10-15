@@ -67,13 +67,13 @@ steps:
         fi
 
         PROJECT="<< parameters.gcp-container-project >>"
-        if [[ -n "${ZONE}" ]]; then
-          echo "Using zone provided in parameters."
+        if [[ -n "${PROJECT}" ]]; then
+          echo "Using project provided in parameters."
         elif [[ -n "${CLOUDSDK_CORE_PROJECT}" ]]; then
-          echo "Using zone from environment."
+          echo "Using project from environment."
           PROJECT="${CLOUDSDK_CORE_PROJECT}"
         else
-          echo "No zone were found. Looked in parameter gcp-container-zone and environment CLOUDSDK_CORE_PROJECT."
+          echo "No project were found. Looked in parameter gcp-container-project and environment CLOUDSDK_CORE_PROJECT."
         fi
 
         gcloud --quiet config set project ${PROJECT}

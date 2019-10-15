@@ -1,6 +1,6 @@
 version: 2.1
 
-#should not be needed
+#Include this in your config.yml
 orbs:
   gcp-auth: entur/gcp-auth@dev:refactor-gcp-auth # Use volatile if you always want the newest version.
 
