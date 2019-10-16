@@ -1,4 +1,4 @@
-# Entur - CircleCI GCP Authentication Orb
+# Entur - CircleCI GCP Authentication Orb [![CircleCI](https://circleci.com/gh/entur/gcp-auth-orb/tree/master.svg?style=svg)](https://circleci.com/gh/entur/gcp-auth-orb/tree/master)
 
 This orb is a utility orb for other orbs to easily authenticate with GCP
 
