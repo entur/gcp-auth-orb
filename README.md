@@ -1,7 +1,5 @@
 # Entur - CircleCI GCP Authentication Orb
 
-> This is a work in progress, not yet available as a pulic release.
-
 This orb is a utility orb for other orbs to easily authenticate with GCP
 
 https://circleci.com/orbs/registry/orb/entur/gcp-auth
