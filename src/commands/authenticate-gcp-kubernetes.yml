@@ -3,10 +3,10 @@ description: |
   This command requires four parameters:
   1. Google Cloud Service Key
   2. Google Cloud Container Cluster
-  3. Google Cloud Container Zone 
+  3. Google Cloud Container Zone
   4. Google Cloud Project ID
   Optional:
-  1. Google Cloud Region  
+  1. Google Cloud Region
 parameters:
   gcp-service-key:
     description: |
@@ -81,7 +81,7 @@ steps:
         else
           echo "No project were found. Looked in parameter gcp-container-project and environment CLOUDSDK_CORE_PROJECT."
         fi
-        
+
         REGION="<< parameters.gcp-container-region >>"
         if [[ "${REGION}" == "true" ]]; then
           echo "Setting "region" parameter."
