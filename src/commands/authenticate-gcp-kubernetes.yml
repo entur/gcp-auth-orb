@@ -3,9 +3,10 @@ description: |
   This command requires four parameters:
   1. Google Cloud Service Key
   2. Google Cloud Container Cluster
-  3. Google Cloud Container Zone
+  3. Google Cloud Container Zone 
   4. Google Cloud Project ID
-
+  Optional:
+  1. Google Cloud Region  
 parameters:
   gcp-service-key:
     description: |
@@ -21,17 +22,22 @@ parameters:
     description: |
       The name of the Google Cloud container cluster to use.
       If not provided, the command will look for the environment variable $CLOUDSDK_CONTAINER_CLUSTER.
-
       To obtain the name of your clusters,
       use the Google Cloud Platform Console (Command: gcloud container clusters list)
     type: string
     default: ""
   gcp-container-zone:
     description: |
-      The region of this cluster.
+      The zone of this cluster.
       If not provided, the command will look for the environment variable $CLOUDSDK_COMPUTE_ZONE.
     type: string
     default: ""
+  gcp-container-region:
+    description: |
+      If the cluster is regional, value should be set to "true".
+      The command will look for the environment variable $CLOUDSDK_COMPUTE_REGION.
+    type: boolean
+    default: false
   gcp-container-project:
     description: |
       The project of this cluster.
@@ -75,6 +81,14 @@ steps:
         else
           echo "No project were found. Looked in parameter gcp-container-project and environment CLOUDSDK_CORE_PROJECT."
         fi
+        
+        REGION="<< parameters.gcp-container-region >>"
+        if [[ "${REGION}" == "true" ]]; then
+          echo "Setting "region" parameter."
+          set -- "$@" --region=$CLOUDSDK_COMPUTE_REGION
+        else
+          echo "Setting "zone" parameter."
+          set -- "$@" --zone=${ZONE}
 
         gcloud --quiet config set project ${PROJECT}
-        gcloud --quiet container clusters get-credentials ${CLUSTER} --zone=${ZONE}
+        gcloud --quiet container clusters get-credentials ${CLUSTER} "$@"
