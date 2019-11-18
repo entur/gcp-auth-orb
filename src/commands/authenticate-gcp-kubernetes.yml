@@ -89,6 +89,7 @@ steps:
         else
           echo "Setting "zone" parameter."
           set -- "$@" --zone=${ZONE}
+        fi
 
         gcloud --quiet config set project ${PROJECT}
         gcloud --quiet container clusters get-credentials ${CLUSTER} "$@"
