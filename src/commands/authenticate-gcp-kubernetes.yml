@@ -33,10 +33,10 @@ parameters:
     default: ""
   gcp-container-region:
     description: |
-      If the cluster is regional, value should be set to "true".
-      The command will look for the environment variable $CLOUDSDK_COMPUTE_REGION.
-    type: boolean
-    default: false
+      The region of this cluster.
+      If not provided, the command will look for the environment variable $CLOUDSDK_COMPUTE_REGION.
+    type: string
+    default: ""
   gcp-container-project:
     description: |
       The project of this cluster.
@@ -82,9 +82,22 @@ steps:
         fi
 
         REGION="<< parameters.gcp-container-region >>"
-        if [[ "${REGION}" == true ]]; then
+        if [[ -n "${REGION}" ]]; then
+          echo "Using region provided in parameters."
+        elif [[ -n "$CLOUDSDK_COMPUTE_REGION" ]]; then
+          echo "Using region from environment."
+          REGION="${$CLOUDSDK_COMPUTE_REGION}"
+        else
+          echo "No project were found. Looked in parameter gcp-container-region and environment CLOUDSDK_COMPUTE_REGION."
+        fi        
+
+        if [[ -n "<< parameters.gcp-container-region >>" ] && [ -n "<< parameters.gcp-container-zone >>" ]]; then
+          echo "Use "zone" and "region" parameters together are not allowed. If the cluster is regional, use only "region" parameter."
+        fi
+
+        if [[ -n "${REGION}" ]]; then
           echo "Setting "region" parameter."
-          set -- "$@" --region=$CLOUDSDK_COMPUTE_REGION
+          set -- "$@" --region=${REGION}"
         else
           echo "Setting "zone" parameter."
           set -- "$@" --zone=${ZONE}
