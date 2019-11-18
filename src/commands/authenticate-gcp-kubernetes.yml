@@ -83,7 +83,7 @@ steps:
         fi
 
         REGION="<< parameters.gcp-container-region >>"
-        if [[ "${REGION}" == "true" ]]; then
+        if [[ "${REGION}" == true ]]; then
           echo "Setting "region" parameter."
           set -- "$@" --region=$CLOUDSDK_COMPUTE_REGION
         else
