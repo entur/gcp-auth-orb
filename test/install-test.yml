@@ -18,7 +18,7 @@ jobs:
           name: Check that get-value account returns OK
           command: gcloud config get-value account
       - gcp-auth/authenticate-gcp-kubernetes
-        # using default from context
+          gcp-container-region: $CLOUDSDK_COMPUTE_REGION
       - run:
           name: Check that get-server-config returns OK
           command: gcloud container get-server-config

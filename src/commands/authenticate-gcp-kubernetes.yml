@@ -86,9 +86,9 @@ steps:
           echo "Using region provided in parameters."
         elif [[ -n "$CLOUDSDK_COMPUTE_REGION" ]]; then
           echo "Using region from environment."
-          REGION="${$CLOUDSDK_COMPUTE_REGION}"
+          REGION="${CLOUDSDK_COMPUTE_REGION}"
         else
-          echo "No project were found. Looked in parameter gcp-container-region and environment CLOUDSDK_COMPUTE_REGION."
+          echo "No region was found. Looked in parameter gcp-container-region and environment CLOUDSDK_COMPUTE_REGION."
         fi
 
         if [[ -n "<< parameters.gcp-container-region >>" ] && [ -n "<< parameters.gcp-container-zone >>" ]]; then
