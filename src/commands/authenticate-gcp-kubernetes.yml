@@ -33,10 +33,9 @@ parameters:
     default: ""
   gcp-container-region:
     description: |
-      If the cluster is regional, value should be set to "true".
-      The command will look for the environment variable $CLOUDSDK_COMPUTE_REGION.
-    type: boolean
-    default: false
+      The region of this cluster. Must be specified if you want to use reginal clusters.
+    type: string
+    default: ""
   gcp-container-project:
     description: |
       The project of this cluster.
@@ -50,7 +49,6 @@ steps:
   - run:
       name: Get credentials from cluster.
       command: |
-
         CLUSTER="<< parameters.gcp-container-cluster >>"
         if [[ -n "${CLUSTER}" ]]; then
           echo "Using cluster provided in parameters."
@@ -59,16 +57,6 @@ steps:
           CLUSTER="${CLOUDSDK_CONTAINER_CLUSTER}"
         else
           echo "No cluster were found. Looked in parameter gcp-container-cluster and environment CLOUDSDK_CONTAINER_CLUSTER."
-        fi
-
-        ZONE="<< parameters.gcp-container-zone >>"
-        if [[ -n "${ZONE}" ]]; then
-          echo "Using zone provided in parameters."
-        elif [[ -n "${CLOUDSDK_COMPUTE_ZONE}" ]]; then
-          echo "Using zone from environment."
-          ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-        else
-          echo "No zone were found. Looked in parameter gcp-container-zone and environment CLOUDSDK_COMPUTE_ZONE."
         fi
 
         PROJECT="<< parameters.gcp-container-project >>"
@@ -81,13 +69,27 @@ steps:
           echo "No project were found. Looked in parameter gcp-container-project and environment CLOUDSDK_CORE_PROJECT."
         fi
 
+        ZONE="<< parameters.gcp-container-zone >>"
+        if [[ -n "${ZONE}" ]]; then
+          echo "Using zone provided in parameters."
+        elif [[ -n "${CLOUDSDK_COMPUTE_ZONE}" ]]; then
+          echo "Using zone from environment."
+          ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+        else
+          echo "No zone were found. Looked in parameter gcp-container-zone and environment CLOUDSDK_COMPUTE_ZONE."
+        fi
+
+        if [[ -n "${ZONE}" ]]; then
+          echo "Setting "zone" parameter."
+          set -- "$@" --zone=${ZONE}
+        fi
+
         REGION="<< parameters.gcp-container-region >>"
         if [[ -n "${REGION}" ]]; then
           echo "Using region provided in parameters."
-          set -- "$@" --region=${REGION}"
+          set -"$@" --region=${REGION}"
         else
-          echo "Setting "zone" parameter."
-          set -"$@" --zone=${ZONE}
+          echo "No region was found. Looked in parameter gcp-container-region."
         fi
 
         gcloud --quiet config set project ${PROJECT}
