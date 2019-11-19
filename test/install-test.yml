@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Check that get-value account returns OK
           command: gcloud config get-value account
-      - gcp-auth/authenticate-gcp-kubernetes:
+      - gcp-auth/authenticate-gcp-kubernetes
       - run: echo "authenticated to regional cluster"
       - run:
           name: Check that get-server-config returns OK
