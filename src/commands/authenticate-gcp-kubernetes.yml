@@ -82,12 +82,12 @@ steps:
         fi
 
         REGION="<< parameters.gcp-container-region >>"
-        if [[ "${REGION}" == true ]]; then
-          echo "Setting region parameter from environment."
-          set -- "$@" --region=$CLOUDSDK_COMPUTE_REGION
+        if [[ -n "${REGION}" ]]; then
+          echo "Using region provided in parameters."
+          set -- "$@" --region=${REGION}"
         else
           echo "Setting "zone" parameter."
-          set -- "$@" --zone=${ZONE}
+          set -"$@" --zone=${ZONE}
         fi
 
         gcloud --quiet config set project ${PROJECT}
