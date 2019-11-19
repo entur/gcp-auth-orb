@@ -51,6 +51,10 @@ steps:
       name: Get credentials from cluster.
       command: |
 
+        if [ -n "<< parameters.gcp-container-region >>" && -n "<< parameters.gcp-container-zone >>" ]; then
+          echo "Use "zone" and "region" parameters together are not allowed. If the cluster is regional, use only "region" parameter."
+        fi
+
         CLUSTER="<< parameters.gcp-container-cluster >>"
         if [[ -n "${CLUSTER}" ]]; then
           echo "Using cluster provided in parameters."
@@ -89,10 +93,6 @@ steps:
           REGION="${CLOUDSDK_COMPUTE_REGION}"
         else
           echo "No region was found. Looked in parameter gcp-container-region and environment CLOUDSDK_COMPUTE_REGION."
-        fi
-
-        if [[ -n "<< parameters.gcp-container-region >>" ] && [ -n "<< parameters.gcp-container-zone >>" ]]; then
-          echo "Use "zone" and "region" parameters together are not allowed. If the cluster is regional, use only "region" parameter."
         fi
 
         if [[ -n "${REGION}" ]]; then
