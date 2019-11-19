@@ -87,7 +87,8 @@ steps:
         REGION="<< parameters.gcp-container-region >>"
         if [[ -n "${REGION}" ]]; then
           echo "Using region provided in parameters."
-          set -"$@" --region=${REGION}
+          set -"$@"
+          set -- "$@" --region=${REGION}
         else
           echo "No region was found. Looked in parameter gcp-container-region."
         fi
