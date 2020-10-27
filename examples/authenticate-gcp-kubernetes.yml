@@ -34,4 +34,3 @@ workflows:
           name: deploy-to-kubernetes
           # context would probably be org-devstage-dev
           context: a-context-that-contain-gcp-env and dockerhub credentials varialbes
-

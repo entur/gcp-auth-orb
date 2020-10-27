@@ -28,4 +28,3 @@ workflows:
           name: use-gcloud-cli-for-something
           # Choose a context with the appropriate env variables set
           context: a-context-that-contain-gcp-env and dockerhub credentials varialbes
-
