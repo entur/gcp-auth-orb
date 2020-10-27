@@ -39,13 +39,16 @@ workflows:
   main:
     jobs:
       - do-something-with-gcloud:
-          context: org-devstage-dev #or maybe dev if on gh/entur
+          context: 
+            - org-devstage-dev # or maybe dev if on gh/entur
+            - global #where $DOCKERHUB_LOGIN and $DOCKERHUB_PASSWORD stored
       - do-something-with-kubernetes:
           context: org-devstage-dev #or maybe dev if on gh/entur
 ``` 
          
 Available commands can be found in `src/commands`. Usage examples in `examples` and in `text/install-test.yml`       
 
+NB! Add $DOCKERHUB_LOGIN and $DOCKERHUB_PASSWORD credentials in your context to log in to Docker hub
 ## Pack and publish orb
 
 Make sure you have the CircleCI CLI:

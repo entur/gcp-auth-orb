@@ -12,7 +12,7 @@ jobs:
   deploy-application:
     docker:
       # Comes with a lof of pre-installed features; including gcloud.
-      - image: entur/cci-toolbox:2.0
+      - image: entur/cci-toolbox:3.0
 
     steps:
       - gcp-auth/authenticate-gcp:
@@ -27,4 +27,4 @@ workflows:
       - deploy-application:
           name: use-gcloud-cli-for-something
           # Choose a context with the appropriate env variables set
-          context: org-devstage-dev
+          context: a-context-that-contain-gcp-env and dockerhub credentials varialbes
