@@ -8,8 +8,7 @@ description: |
 executors:
   entur-cci-toolbox:
     docker:
-      # Entur CCI-toolbox has gcloud & rsync pre-installed.
-      - image: entur/cci-toolbox:2.1
+      - image: google/cloud-sdk:alpine
         auth:
           username: $DOCKERHUB_LOGIN
           password: $DOCKERHUB_PASSWORD
